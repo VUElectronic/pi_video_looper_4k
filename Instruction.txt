@@ -1,0 +1,56 @@
+PI Image: Raspberry Pi OS (Legacy, 64-bit) Lite
+
+2. Add to end of sudo nano /boot/firmware/config.txt:
+# HDMI
+hdmi_force_hotplug=1
+hdmi_drive=2
+
+# 4K30 support
+hdmi_enable_4kp60=0
+
+# Disable composite TV output
+enable_tvout=0
+
+# Disable overscan
+disable_overscan=1
+
+# GPU memory
+gpu_mem=256
+
+
+3. 
+>>$ nano vlc_setup_loop_video_4K.sh
+>>$ chmod +x ./vlc_setup_loop_video_4K.sh
+>>$ ./vlc_setup_loop_video_4K.sh
+
+
+
+--TIPS--
+For best performance:
+- 4k resolution Use H.265 (HEVC)
+- 1080p use H.264
+- Keep bitrate reasonable (<30 Mbps recommended)
+
+
+-- HEVC Converter
+ffmpeg -i "C:\Users\Unreal\Downloads\Swiming Pool.mp4" -r 24 -c:v hevc_nvenc -cq 23 "C:\Users\Unreal\Downloads\SwimingPool.mp4"
+
+
+
+-- DEBUG--
+sudo nano /etc/systemd/system/loopvideo.service
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl restart loopvideo.service
+
+
+## win command to copy file to Pi: >> 
+scp -r "C:\Users\Unreal\Downloads\kharadi Swimming Pool (1).mp4" vu@lcd12.local:/home/vu/Videos
+
+## copy only the contents of folder
+scp -r "C:\Users\Unreal\Documents\Videos\Pool\4K_HEVC\*" vu@lcd10.local:/home/vu/Videos/
+
+
+
+
+ExecStart=/usr/bin/cvlc --no-audio --vout=drm_vout --no-video-title-show --quiet --fullscreen --loop --crop=21:9 /home/vu/Videos/
